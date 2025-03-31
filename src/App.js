@@ -79,47 +79,38 @@ const App = () => {
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
     if (calculateTotal() === 0) {
-        alert('Please select at least one item to place an order.');
-        return;
+      alert('Please select at least one item to place an order.');
+      return;
     }
-
+  
     const generatedOrderId = 'AH' + Math.floor(100000 + Math.random() * 900000);
     setOrderId(generatedOrderId);
-
+  
     const orderDetails = {
-        orderId: generatedOrderId,
-        ...formData,
-        itemsText: getOrderItemsText(),
-        total: calculateTotal()
+      orderId: generatedOrderId,
+      ...formData,
+      itemsText: getOrderItemsText(),
+      total: calculateTotal()
     };
-
+  
     try {
-        // Send data to Make.com Webhook
-        await axios.post('https://hook.us2.make.com/9r3vyl7p5jh6icgrmsvnfjvxy439a4fr', orderDetails);
-
-        // Send data to backend email service
-        const response = await fetch('http://localhost:5000/send-email', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderDetails),
-            mode: 'cors'
-        });
-
-        const result = await response.json();
-        if (result.success) {
-            alert('Order placed successfully! Email sent.');
-            setOrderPlaced(true);
-        } else {
-            alert('Failed to send email.');
-        }
+      // Send data to the serverless function
+      const response = await axios.post('/api/submitOrder', orderDetails);
+  
+      if (response.data.success) {
+        alert('Order placed successfully!');
+        setOrderPlaced(true);
+      } else {
+        alert('Failed to process the order.');
+      }
     } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while processing the order.');
+      console.error('Error:', error);
+      alert('An error occurred while processing the order.');
     }
-};
-
+  };
+  
   return (
     <div className="bg-amber-50 min-h-screen flex flex-col text-brown-800">
       {/* Header */}
