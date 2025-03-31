@@ -103,7 +103,8 @@ const App = () => {
         const response = await fetch('http://localhost:5000/send-email', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(orderDetails)
+            body: JSON.stringify(orderDetails),
+            mode: 'cors'
         });
 
         const result = await response.json();
