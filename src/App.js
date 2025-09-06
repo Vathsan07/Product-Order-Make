@@ -96,15 +96,19 @@ const App = () => {
     };
   
     try {
-      // Send data to the serverless function
-      const response = await axios.post('/api/submitOrder', orderDetails);
-  
-      if (response.data.success) {
-        alert('Order placed successfully!');
-        setOrderPlaced(true);
-      } else {
-        alert('Failed to process the order.');
-      }
+      const response = await axios.post(
+  "https://hook.us2.make.com/9r3vyl7p5jh6icgrmsvnfjvxy439a4fr",
+  orderDetails,
+  { headers: { "Content-Type": "application/json" } }
+);
+
+// Make always returns 200 if received successfully
+if (response.status === 200) {
+  alert("Order placed successfully! 🎉");
+  setOrderPlaced(true);
+} else {
+  alert("Failed to process the order.");
+}
     } catch (error) {
       console.error('Error:', error);
       alert('An error occurred while processing the order.');
